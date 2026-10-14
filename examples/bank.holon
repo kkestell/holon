@@ -1,0 +1,15 @@
+# A bank account. The state is the balance, and each event is ["deposit", amount] or
+# ["withdraw", amount]. A withdrawal larger than the balance traps, which leaves the balance
+# unchanged and emits nothing.
+[[[pipe,
+    [set, path[0, 1],
+      [if, [eq, [get, path[1, 0]], [quote, "deposit"]],
+        [alu, add, [get, path[0, 1]], [get, path[1, 1]]],
+        [if, [eq, [get, path[1, 0]], [quote, "withdraw"]],
+          [if, [alu, lt, [get, path[0, 1]], [get, path[1, 1]]],
+            [trap, [quote, "insufficient funds"]],
+            [alu, sub, [get, path[0, 1]], [get, path[1, 1]]]],
+          [trap, [quote, "unknown operation"]]]]],
+    # The one effect is a receipt: the event with the new balance appended.
+    [tuple, [get, path[0]], [tuple, [concat, [get, path[1]], [tuple, [get, path[0, 1]]]]]]]],
+ 0]

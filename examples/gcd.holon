@@ -1,0 +1,11 @@
+# Euclid's algorithm. Each event is a pair [a, b]; the state and the one effect are gcd(a, b).
+[[[pipe,
+    [set, path[0, 1], [call, [get, path[0]], [quote, 1], [get, path[1]]]],
+    [tuple, [get, path[0]], [tuple, [get, path[0, 1]]]]],
+  # Method 1: the subject is [object, [a, b]]. gcd(a, 0) is a; otherwise gcd(a, b) is
+  # gcd(b, a mod b), a tail call.
+  [if, [eq, [get, path[1, 1]], [quote, 0]],
+    [get, path[1, 0]],
+    [call, [get, path[0]], [quote, 1],
+      [tuple, [get, path[1, 1]], [alu, mod, [get, path[1, 0]], [get, path[1, 1]]]]]]],
+ 0]

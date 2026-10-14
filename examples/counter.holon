@@ -1,0 +1,10 @@
+# A counter: [vtable, state]. The transition method's subject is [object, event], so path[0, 1]
+# is the state and path[1] is the event.
+[[[if, [kind, [get, path[1]]],
+    # A tuple event is a new vtable: run its method 1 on the current state.
+    [call, [tuple, [get, path[1]], [get, path[0, 1]]], [quote, 1], [quote, []]],
+    # A u64 event is added to the state, and the new total is the one effect.
+    [pipe,
+      [set, path[0, 1], [alu, add, [get, path[0, 1]], [get, path[1]]]],
+      [tuple, [get, path[0]], [tuple, [get, path[0, 1]]]]]]],
+ 0]

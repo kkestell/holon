@@ -1,0 +1,12 @@
+# A vtable that upgrades the counter when sent to it as an event. The counter runs method 1,
+# which migrates the state from total to [total, 0] and emits "upgraded". Method 0 is the new
+# transition method: it adds each u64 event to the total, counts it, and emits the new state.
+[[pipe,
+   [set, path[0, 1],
+     [tuple,
+       [alu, add, [get, path[0, 1, 0]], [get, path[1]]],
+       [alu, add, [get, path[0, 1, 1]], [quote, 1]]]],
+   [tuple, [get, path[0]], [tuple, [get, path[0, 1]]]]],
+ [tuple,
+   [tuple, [get, path[0, 0]], [tuple, [get, path[0, 1]], [quote, 0]]],
+   [quote, ["upgraded"]]]]

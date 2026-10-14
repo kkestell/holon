@@ -1,0 +1,13 @@
+# A coin-operated turnstile. The state is "locked" or "unlocked", and the events are "coin" and
+# "push". A coin unlocks a locked turnstile and a push locks an unlocked one, emitting "unlock" or
+# "lock" for the host to actuate. A coin while unlocked or a push while locked changes nothing.
+[[[if, [eq, [get, path[1]], [quote, "coin"]],
+    [tuple,
+      [tuple, [get, path[0, 0]], [quote, "unlocked"]],
+      [if, [eq, [get, path[0, 1]], [quote, "locked"]], [quote, ["unlock"]], [quote, []]]],
+    [if, [eq, [get, path[1]], [quote, "push"]],
+      [tuple,
+        [tuple, [get, path[0, 0]], [quote, "locked"]],
+        [if, [eq, [get, path[0, 1]], [quote, "unlocked"]], [quote, ["lock"]], [quote, []]]],
+      [trap, [quote, "unknown event"]]]]],
+ "locked"]

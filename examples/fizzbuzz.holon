@@ -1,0 +1,25 @@
+# FizzBuzz. The state is the last number reached. Each u64 event n continues the count by n
+# numbers and emits one effect per number: "Fizz", "Buzz", "FizzBuzz", or the number itself.
+[[[tuple,
+    [tuple, [get, path[0, 0]], [alu, add, [get, path[0, 1]], [get, path[1]]]],
+    [call, [get, path[0]], [quote, 1],
+      [tuple,
+        [alu, add, [get, path[0, 1]], [quote, 1]],
+        [alu, add, [get, path[0, 1]], [get, path[1]]],
+        [quote, []]]]],
+  # Method 1: the subject is [object, [i, last, lines]]. Appends the line for each number from
+  # i through last to lines.
+  [if, [alu, lt, [get, path[1, 1]], [get, path[1, 0]]],
+    [get, path[1, 2]],
+    [call, [get, path[0]], [quote, 1],
+      [tuple,
+        [alu, add, [get, path[1, 0]], [quote, 1]],
+        [get, path[1, 1]],
+        [concat, [get, path[1, 2]],
+          [tuple, [call, [get, path[0]], [quote, 2], [get, path[1, 0]]]]]]]],
+  # Method 2: the subject is [object, i]. Returns the line for i.
+  [if, [eq, [alu, mod, [get, path[1]], [quote, 15]], [quote, 0]], [quote, "FizzBuzz"],
+    [if, [eq, [alu, mod, [get, path[1]], [quote, 3]], [quote, 0]], [quote, "Fizz"],
+      [if, [eq, [alu, mod, [get, path[1]], [quote, 5]], [quote, 0]], [quote, "Buzz"],
+        [get, path[1]]]]]],
+ 0]
